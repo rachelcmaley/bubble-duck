@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Sniglet:wght@400;800&display=swap');
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+}
+
+.Instructions {
+  margin: 10px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-weight: 100;
+  font-size: large;
+}
+
+.uploadButton {
+  padding: 10px 20px;
+  color: rgb(0, 0, 0);
+  background-color: #99b2dd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+}
+  
+.uploadButton:hover {
+  background-color: #8397b8;
+}
+
+.selectPhotoButton {
+  padding: 10px 20px;
+  background-color: #f5d7e3;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+}
+
+.selectPhotoButton:hover {
+  background-color: #c77696c4;
+}
+
+.elementsContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+  
+.imagePreview {
+  max-width: 500px;
+  max-height: 500px;
+  margin-top: 10px;
+}
+
+.responseContainer {
+  margin: 10px 20px;
+  background-color: #fff9ea;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-size: 16px;
+  max-width: 700px;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+  
+.responseContainer h3 {
+  padding: 0px;
+  margin-bottom: 0px;
+  font-family: 'Sniglet', sans-serif;
+  font-size: x-large;
+}
+
+.responseContainer li {
+  margin-bottom: 10px; /* Spacing between items */
+  padding: 10px; /* Padding inside each item */
+  border-radius: 5px; /* Rounded corners for each item */
+  display: flex;
+  justify-content: left;
+  text-align: left;
+  list-style-type: none; 
+} 
+
+.responseContainer p {
+  margin-bottom: 10px; /* Spacing between items */
+  padding: 10px; /* Padding inside each item */
+  border-radius: 5px; /* Rounded corners for each item */
+  display: flex;
+  justify-content: left;
+  text-align: left;
+  list-style-type: none; 
+}
+
+.getRecsButton {
+  padding: 10px 20px;
+  background-color: #f5d7e3;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.getRecsButton:hover {
+  background-color: #c77696c4;
+}
+
