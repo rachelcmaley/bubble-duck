@@ -1,3 +1,37 @@
+# Bubble Duck Client
+
+Welcome to the Bubble Duck Client repository, the front-end counterpart of the Bubble Duck ecosystem. This client interface offers an engaging and intuitive way for users to interact with the Bubble Duck features, including image uploads, data visualization, and more.
+
+## Description
+
+The Bubble Duck Client is built using React, providing a responsive and dynamic user experience. It communicates with the Bubble Duck Server to fetch data, submit user inputs, and display processed results. Designed with usability in mind, it aims to make complex processes simple and accessible for all users.
+
+## Features
+
+- **User-Friendly Interface**: Easy navigation and interaction with the application.
+- **Image Upload**: Allows users to upload images directly through the interface.
+- **Real-Time Data Display**: Dynamically displays data received from the server.
+- **Responsive Design**: Ensures a seamless experience across various devices and screen sizes.
+
+## Installation
+
+Ensure you have Node.js and npm installed on your system to run the Bubble Duck Client.
+
+```bash
+# Clone the repository
+git clone https://github.com/rachelcmaley/bubble-duck-client.git
+cd bubble-duck-client
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
+
+```
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

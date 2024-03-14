@@ -1,25 +1,24 @@
 import './styles/main.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
-  import {PhotoUpload} from './components/common';
+import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { PhotoUpload }from './components/photoUpload';
+import { GetRecommendations } from './components/getRecommendations';
+import { LandingPage } from './components/landingPage';
+import { Header } from './components/header'
 
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-      WELCOME TO BUBBLE DUCK!
-        <p>
-          <img className='Landing-page-duck' src='duck-landing-page.png' alt='Cute Duck Welcomes You'></img>
-          <PhotoUpload />
-        </p>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route element={<><Header /><Outlet /></>}>
+          <Route path='/photo-upload' element={<PhotoUpload />} />
+          <Route path='/get-recommendations' element={<GetRecommendations /> } />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
-ReactDOM.render(<App />, document.getElementById('root'));
-
-//command to start program
-// npm start

@@ -1,17 +1,70 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Sniglet:wght@400;800&display=swap');
 
-.formContainer {
+/* LANDING PAGE */
+.landingPage {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-self: center;
+  align-items: center;
   justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(0, 0, 0);
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 700;
+  font-size: xx-large;
+  padding-top: 10px;
 }
 
+.landingPage h1 {
+  margin-top: 0;
+}
+
+.landingPageDuck {
+  max-height: 400px;
+}
+
+.beginButton {
+  padding: 10px 20px;
+  background-color: #f5d7e3;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 30px;
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 600;
+  width: 350px;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}
+
+
+/* NAV BAR */
+.headerNav {
+  background-color: #595358;
+  display: flex;
+  justify-content: flex-start;
+  padding: 5px;
+  width: 100%;
+}
+
+.logoContainer img {
+  height: 40px; 
+  margin-left: 10px;
+}
+
+
+/* PHOTO UPLOAD PAGE */
 .Instructions {
   margin: 10px;
   font-family: 'PlusJakartaSans', sans-serif;
   font-weight: 100;
   font-size: large;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
 }
 
 .uploadButton {
@@ -22,7 +75,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'PlusJakartaSans', sans-serif;
+  font-family: 'Sniglet', sans-serif;
   width: fit-content;
   display: flex;
   justify-content: center;
@@ -33,6 +86,8 @@
 }
 
 .selectPhotoButton {
+  margin: auto;
+  margin-bottom: 20px;
   padding: 10px 20px;
   background-color: #f5d7e3;
   color: rgb(0, 0, 0);
@@ -40,7 +95,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'PlusJakartaSans', sans-serif;
+  font-family: 'Sniglet', sans-serif;
   width: fit-content;
   display: flex;
   justify-content: center;
@@ -48,6 +103,13 @@
 
 .selectPhotoButton:hover {
   background-color: #c77696c4;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
 }
 
 .elementsContainer {
@@ -59,11 +121,36 @@
 .imagePreview {
   max-width: 500px;
   max-height: 500px;
-  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; 
+  width: 100vw; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+}
+
+.loadingContainer img {
+  max-height: 300px;
+}
+
+.loadingContainer p {
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 500;
+}
+
+
+/* RESPONSE DATA DISPLAY */
 .responseContainer {
-  margin: 10px 20px;
+  margin: auto;
+  margin-bottom: 20px;
+  margin-top: 20px;
   background-color: #fff9ea;
   font-family: 'PlusJakartaSans', sans-serif;
   font-size: 16px;
@@ -71,7 +158,10 @@
   max-height: none;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
+  padding: 10px;
 }
   
 .responseContainer h3 {
@@ -101,6 +191,7 @@
   list-style-type: none; 
 }
 
+/* RECOMMENDATION PAGE */
 .getRecsButton {
   padding: 10px 20px;
   background-color: #f5d7e3;
@@ -119,4 +210,23 @@
 .getRecsButton:hover {
   background-color: #c77696c4;
 }
+
+
+
+/* SCHEDULE PAGE */
+.getScheduleButton {
+  padding: 10px 20px;
+  background-color: #f5d7e3;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
 

@@ -11,7 +11,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 app = Flask(__name__)
 CORS(app)
 
-response_storage = None
+#TODO:
+# create assistant and send knowledge files made from scraper
+# verify assistant capability to use knowledge file and provide correct response
+# format response display
 
 # response_storage = json.dumps({"choices":[{"finish_reason":"stop","index":0,"message":{"content":"In the photo, you can see the following skincare products:\n\n1. La Roche-Posay Anthelios Mineral Tinted Sunscreen for Face SPF 30 - A tinted mineral sunscreen offering broad-spectrum protection.\n\n2. e.l.f. Skin Superfine Toner - This appears to be a facial toner, likely containing Niacinamide given the text on the packaging.\n\n3. Mario Badescu Skincare Glycolic Acid Toner - A gentle exfoliating toner designed for skincare with glycolic acid as an active ingredient.\n\n4. Laneige Cica Sleeping Mask - This is a sleeping mask that contains Centella Asiatica, also known as cica, which is typically used for its soothing and repairing properties.\n\n5. CeraVe Healing Ointment - A skin protectant ointment that contains ceramides and is used to hydrate and restore the skin's barrier. \n\nThese products seem to cover a range of skincare steps including cleansing, toning, treating, moisturizing, and protecting the skin.","role":"assistant"}}],"created":1709404284,"id":"chatcmpl-8yOQmdig5jvM7y2fbdDIEJEqjkE0P","model":"gpt-4-1106-vision-preview","object":"chat.completion","usage":{"completion_tokens":215,"prompt_tokens":780,"total_tokens":995}})
 
@@ -62,23 +65,17 @@ def handle_image_upload():
         }
 
         try:
-            global response_storage
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             response_data = response.json()
-            response_storage = response_data['choices'][0]['message']['content']
-            # Assuming the response from OpenAI is the data you want to send back
+            # Assuming the response from OpenAI is the data to send back
             return jsonify(response_data), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
 
 
-@app.route('/recommendations', methods=['GET'])
+@app.route('/recommendations', methods=['POST'])
 def get_recommendations():
-    global response_storage
-
-    if response_storage is None:
-        return jsonify({'error': 'No data stored'}), 404
     
     headers = {
         "Content-Type": "application/json",
@@ -93,12 +90,45 @@ def get_recommendations():
         "content": [
             {
             "type": "text",
-            "text": f"Based off the data provided in this JSON response below, what dermatologist recommended products would you suggest adding to this skincare routine? Please provide a list of brand names for each type of product, and a short reason why each type of product is important. {response_storage}" 
+            "text": f"Based off the data provided in this JSON response below, what dermatologist recommended products would you suggest adding to this skincare routine? Please provide a list of brand names for each type of product, and a short reason why each type of product is important." 
             },
         ]
         }
     ],
-    "max_tokens": 300
+    "max_tokens": 1024
+    }
+
+    try:
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+        response_data = response.json()
+        # Assuming the response from OpenAI is the data to send back
+        return jsonify(response_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/schedule', methods=['POST'])
+def get_schedule():
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {openai.api_key}"
+        }
+
+    payload = {
+    "model": "gpt-4-vision-preview",
+    "messages": [
+        {
+        "role": "user",
+        "content": [
+            {
+            "type": "text",
+            "text": f"Please list a complete morning and nighttime skincare routine incoorporating both the user's current products, and the products you recommended. Take into account the order of application and instructions for each product." 
+            },
+        ]
+        }
+    ],
+    "max_tokens": 1024
     }
 
     try:
@@ -109,12 +139,7 @@ def get_recommendations():
         return jsonify(response_data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-#comman to start app:
-#flask run
