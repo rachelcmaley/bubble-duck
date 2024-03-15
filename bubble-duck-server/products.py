@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import json
 import time
 
@@ -25,69 +25,70 @@ Usage Note:
 
 def scrape_products():
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # For headless operation
+    options.add_argument('--headless')  
     driver = webdriver.Chrome(options=options)
 
-    types = ['cleanser', 'toner', 'serum', 'moisturizer', 'sunscreen']
+    types = ['cleanser']
     base_url = 'https://incidecoder.com/search?query='
     all_products = []
 
     for product_type in types:
-        driver.get(base_url + product_type)
-        try:
-            # Wait for product links to load
-            product_links = WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.klavika', 'klavikab lilac'))
-            )
-            products_info = [{
-                'name': link.text.lower(),
-                'href': link.get_attribute('href')
-            } for link in product_links]
-        except TimeoutException:
-            print(f"Timed out waiting for {product_type} page to load")
-            continue
-        
-        # Assuming CSS selectors are corrected and 'our-take-icky' class name is accurate
-        for product_info in products_info:
-            href = product_info['href']
-            if "products" in href:
-                driver.get(href)
-                try:
-                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.ingred-link.black')))
-                    # Initialize variables in case they're needed outside the 'try' block
-                    ingredients = 'Not available'
-                    brand = 'Unknown'
-                    image_url = None
-                    
-                    ingredient_elements = driver.find_elements(By.CSS_SELECTOR, '.product-skim.fs16')  # Corrected CSS selector
-                    is_product_okay = True
-                    for ingredient_element in ingredient_elements:
-                        parent_span = ingredient_element.find_element(By.XPATH, './..')  # Assuming this correctly finds the parent span
-                        span_class = parent_span.get_attribute('class')
-                        if "our-take-icky" in span_class:
-                            is_product_okay = False
-                            break
+        current_page = 1
+        has_next_page = True
 
-                    if is_product_okay:
-                        product_ingredients = [element.text.strip().lower() for element in ingredient_elements]
-                        ingredients = ';'.join(set(product_ingredients))  # Process ingredients only if is_product_okay
-                        brand = driver.find_element(By.CSS_SELECTOR, 'a.underline').text.strip()
-                        image_url = driver.find_element(By.CSS_SELECTOR, '#product-main-image img').get_attribute('src', None)
-                        
-                        product = {
-                            'name': product_info['name'],
-                            'brand': brand,
-                            'type': product_type,
-                            'image': image_url,
-                            'ingredients': ingredients,
-                        }
-                        all_products.append(product)
-                except TimeoutException:
-                    print("Timed out waiting for ingredients to load")
-                    continue
-                finally:
-                    driver.back()
-                    time.sleep(1)
+
+        while has_next_page:
+            driver.get(f"{base_url}{product_type}&ppage={current_page}")
+
+            try:
+                # Wait for product links to load
+                product_links = WebDriverWait(driver, 10).until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.klavika'))
+                )
+                product_hrefs = [link.get_attribute('href') for link in product_links if "products" in link.get_attribute('href')]
+                for product_href in product_hrefs:
+                    driver.get(product_href)
+                    if "products" in product_href:
+                        driver.get(product_href)
+                        try:
+                            WebDriverWait(driver, 10).until(
+                                EC.presence_of_element_located((By.CSS_SELECTOR, '.product-skim.fs16'))
+                            )
+                            # Check if any ingredient is marked as 'icky'
+                            if not driver.find_elements(By.CSS_SELECTOR, '.our-take.our-take-icky'):
+                                product_name = driver.find_element(By.CSS_SELECTOR, 'h1').text
+                                product_ingredients = [ingredient.text for ingredient in driver.find_elements(By.CSS_SELECTOR, '.ingred-link.black')]
+                                ingredients = '; '.join(product_ingredients)
+                                brand = driver.find_element(By.CSS_SELECTOR, 'a.underline').text.strip()
+                                image_url = driver.find_element(By.CSS_SELECTOR, '#product-main-image img').get_attribute('src')
+
+                                product = {
+                                    'name': product_name,
+                                    'brand': brand,
+                                    'type': product_type,
+                                    'image': image_url,
+                                    'ingredients': ingredients,
+                                }
+                                all_products.append(product)
+                        except TimeoutException:
+                            print("Timed out waiting for product details to load.")
+                        finally:
+                            driver.back()
+                            WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.klavika')))
+                
+                # Check for the next page
+                try:
+                    next_page_btn = driver.find_element(By.CSS_SELECTOR, 'a[href*="ppage="]')
+                    if next_page_btn:
+                        current_page += 1
+                    else:
+                        has_next_page = False
+                except NoSuchElementException:
+                    has_next_page = False
+
+            except TimeoutException:
+                print(f"Timed out waiting for {product_type} page to load.")
+                break
 
     driver.quit()
 

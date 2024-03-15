@@ -5,6 +5,7 @@ import { PhotoUpload }from './components/photoUpload';
 import { GetRecommendations } from './components/getRecommendations';
 import { LandingPage } from './components/landingPage';
 import { Header } from './components/header'
+import { ConfirmProducts } from './components/confirmProducts';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route element={<><Header /><Outlet /></>}>
           <Route path='/photo-upload' element={<PhotoUpload />} />
+          <Route path='/confirm-products' element={<ConfirmProducts /> } />
           <Route path='/get-recommendations' element={<GetRecommendations /> } />
         </Route>
       </Routes>

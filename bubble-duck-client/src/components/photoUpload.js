@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/components.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPhotoUploadResponse, setRecommendationsResponse } from '../redux/responsesSlice';
+import { setPhotoUploadResponse, setPhotoPreviewUrl } from '../redux/responsesSlice';
 import { displayResponseContent } from '../utils/responseHelpers';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ export const PhotoUpload = () => {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
       setSelectedFile(file);
+      dispatch(setPhotoPreviewUrl)
     }
   };
 
@@ -53,35 +54,7 @@ export const PhotoUpload = () => {
       console.error('Error:', error);
       alert('Upload failed with an error');
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGetRecsClick = async (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const requestBody = { data: photoUploadResponse };
-      const response = await fetch('http://localhost:5000/recommendations', {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const recData = await response.json(); 
-      dispatch(setRecommendationsResponse(recData));
-      navigate('/get-recommendations', { state: { recommendations: recData } });
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-    finally {
+      navigate('/confirm-products', { state: { photoData} });
       setIsLoading(false);
     }
   };
@@ -133,16 +106,6 @@ export const PhotoUpload = () => {
           <img src='bubbles-loading.gif' alt='Loading Bubbles Gif'/>
           <p>Loading...</p>
         </div>
-      )}
-      {!isLoading && photoData && (
-        <>
-          <div className='responseContainer'>
-            <h3>Your Current Products:</h3>
-            {/* Render the parsed response content */}
-            {displayResponseContent(photoData)}
-          </div>
-          <button onClick={handleGetRecsClick} className="selectPhotoButton" style={{ textDecoration: 'none' }}>Get Recommendations</button>
-        </>
       )}
     </div>
   );

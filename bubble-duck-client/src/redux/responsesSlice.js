@@ -3,11 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 export const responsesSlice = createSlice({
   name: 'responses',
   initialState: {
+    photoPreviewUrl: null,
     photoUploadResponse: null,
     recommendationsResponse: null,
     scheduleResponse: null,
   },
   reducers: {
+    setPhotoPreviewUrl: (state, action) => {
+      state.photoPreviewUrl = action.payload;
+    },
     setPhotoUploadResponse: (state, action) => {
       state.photoUploadResponse = action.payload;
     },
@@ -21,7 +25,7 @@ export const responsesSlice = createSlice({
 });
 
 // Export actions
-export const { setPhotoUploadResponse, setRecommendationsResponse, setScheduleResponse } = responsesSlice.actions;
+export const { setPhotoPreviewUrl, setPhotoUploadResponse, setRecommendationsResponse, setScheduleResponse } = responsesSlice.actions;
 
 // Export reducer
 export default responsesSlice.reducer;
