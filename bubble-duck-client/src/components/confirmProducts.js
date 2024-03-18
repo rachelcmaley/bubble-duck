@@ -46,6 +46,7 @@ const photoPreviewUrl = 'product-photo.jpg'
     const requestBody = { data: editableProducts  };
 
     try {
+        // Send the user's products to the backend for recommendations
       const response = await fetch('http://localhost:5000/recommendations', {
         method: 'POST', 
         headers: {
@@ -58,7 +59,10 @@ const photoPreviewUrl = 'product-photo.jpg'
         throw new Error('Network response was not ok');
       }
 
+      // Parse the recommendations from the response
       const recData = await response.json(); 
+
+      // Update Redux store and navigate to the recommendations page with the data
       dispatch(setRecommendationsResponse(recData));
       navigate('/get-recommendations', { state: { recommendations: recData } });
     } catch (error) {

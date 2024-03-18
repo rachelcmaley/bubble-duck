@@ -73,38 +73,38 @@ def handle_image_upload():
             return jsonify({"error": str(e)}), 500
         
 
-
-@app.route('/recommendations', methods=['POST'])
-def get_recommendations():
+# old recommendations API call
+# @app.route('/recommendations', methods=['POST'])
+# def get_recommendations():
     
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}"
-        }
+#     headers = {
+#         "Content-Type": "application/json",
+#         "Authorization": f"Bearer {openai.api_key}"
+#         }
 
-    payload = {
-    "model": "gpt-4-vision-preview",
-    "messages": [
-        {
-        "role": "user",
-        "content": [
-            {
-            "type": "text",
-            "text": f"Based off the data provided in this JSON response below, what dermatologist recommended products would you suggest adding to this skincare routine? Please provide a list of brand names for each type of product, and a short reason why each type of product is important." 
-            },
-        ]
-        }
-    ],
-    "max_tokens": 1024
-    }
+#     payload = {
+#     "model": "gpt-4-vision-preview",
+#     "messages": [
+#         {
+#         "role": "user",
+#         "content": [
+#             {
+#             "type": "text",
+#             "text": f"Based off the data provided in this JSON response below, what dermatologist recommended products would you suggest adding to this skincare routine? Please provide a list of brand names for each type of product, and a short reason why each type of product is important." 
+#             },
+#         ]
+#         }
+#     ],
+#     "max_tokens": 1024
+#     }
 
-    try:
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-        response_data = response.json()
-        # Assuming the response from OpenAI is the data to send back
-        return jsonify(response_data), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#     try:
+#         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+#         response_data = response.json()
+#         # Assuming the response from OpenAI is the data to send back
+#         return jsonify(response_data), 200
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
     
 
 @app.route('/schedule', methods=['POST'])
