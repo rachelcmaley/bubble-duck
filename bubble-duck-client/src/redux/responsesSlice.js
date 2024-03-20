@@ -7,6 +7,7 @@ export const responsesSlice = createSlice({
     photoUploadResponse: null,
     recommendationsResponse: null,
     scheduleResponse: null,
+    updatedRoutine: null
   },
   reducers: {
     setPhotoPreviewUrl: (state, action) => {
@@ -21,11 +22,14 @@ export const responsesSlice = createSlice({
     setScheduleResponse: (state, action) => {
       state.scheduleResponse = action.payload;
     },
+    setUpdatedRoutine: (state, action) => {
+      state.updatedRoutine = action.payload;
+    }
   },
 });
 
 // Export actions
-export const { setPhotoPreviewUrl, setPhotoUploadResponse, setRecommendationsResponse, setScheduleResponse } = responsesSlice.actions;
+export const { setPhotoPreviewUrl, setPhotoUploadResponse, setRecommendationsResponse, setScheduleResponse, setUpdatedRoutine } = responsesSlice.actions;
 
 // Export reducer
 export default responsesSlice.reducer;

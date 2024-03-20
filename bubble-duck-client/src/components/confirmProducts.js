@@ -1,49 +1,64 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { setPhotoUploadResponse, setRecommendationsResponse } from '../redux/responsesSlice';
+import { useNavigate } from 'react-router-dom';
 import { EditResponseContent } from '../utils/responseHelpers';
+import { setRecommendationsResponse } from '../redux/responsesSlice';
+
 
 export const ConfirmProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-//   const photoPreviewUrl = useSelector(state => state.yourReducer.photoPreviewUrl);
+  const productData = useSelector(state => state.responses.photoUploadResponse);
+  const photoPreviewUrl = useSelector(state => state.responses.photoPreviewUrl);
   const [isLoading, setIsLoading] = useState(false);
-  const initialProducts = location.state?.photoData; // Assuming photoData is passed via state
-  const [editableProducts, setEditableProducts] = useState(initialProducts || []);
-//   const initialResponse = location.state?.photoData;
+  const initialResponse = useSelector(state => state.responses.photoUploadResponse);
+  const quizAnswers = useSelector(state => state.quiz.answers);
 
-// mock response for testing
-const photoPreviewUrl = 'product-photo.jpg'
-  const initialResponse = {
-    "choices": [
-      {
-        "finish_reason": "stop",
-        "index": 0,
-        "message": {
-          "content": "In the photo, you can see the following skincare products:\n\n1. La Roche-Posay Anthelios Mineral Tinted Sunscreen for Face SPF 30 - A tinted mineral sunscreen offering broad-spectrum protection.\n\n2. e.l.f. Skin Superfine Toner - This appears to be a facial toner, likely containing Niacinamide given the text on the packaging.\n\n3. Mario Badescu Skincare Glycolic Acid Toner - A gentle exfoliating toner designed for skincare with glycolic acid as an active ingredient.\n\n4. Laneige Cica Sleeping Mask - This is a sleeping mask that contains Centella Asiatica, also known as cica, which is typically used for its soothing and repairing properties.\n\n5. CeraVe Healing Ointment - A skin protectant ointment that contains ceramides and is used to hydrate and restore the skin's barrier. \n\nThese products seem to cover a range of skincare steps including cleansing, toning, treating, moisturizing, and protecting the skin.",
-          "role": "assistant"
-        }
-      }
-    ],
-    "created": 1709404284,
-    "id": "chatcmpl-8yOQmdig5jvM7y2fbdDIEJEqjkE0P",
-    "model": "gpt-4-1106-vision-preview",
-    "object": "chat.completion",
-    "usage": {
-      "completion_tokens": 215,
-      "prompt_tokens": 780,
-      "total_tokens": 995
-    }
-  };
+
+  // Function to extract product types from the content
+function extractProductTypesFromContent(content) {
+    const productTypes = [];
+    const lines = content.split('\n');
+
+    // Example patterns to identify product types
+    const productTypePatterns = {
+        "sunscreen": /sunscreen/i,
+        "toner": /toner/i,
+        "serum": /serum/i,
+        "moisturizer": /moisturizer/i,
+        "cleanser": /cleanser/i,
+        "exfoliant": /exfoliant/i,
+        // Add more mappings as needed
+    };
+
+    lines.forEach(line => {
+        Object.keys(productTypePatterns).forEach(type => {
+            if(productTypePatterns[type].test(line)) {
+                // Add to productTypes if not already included
+                if(!productTypes.includes(type)) {
+                    productTypes.push(type);
+                }
+            }
+        });
+    });
+
+    return productTypes;
+}
 
   const handleGetRecsClick = async (event) => {
-    setIsLoading(true);
 
-    // Update Redux store with edited product data
-    dispatch(setPhotoUploadResponse(editableProducts));
-    const requestBody = { data: editableProducts  };
+    if (!productData || Object.keys(productData).length === 0) {
+        console.error('No product data available.');
+        return;
+    }
+
+    setIsLoading(true);
+    const content = productData.choices[0].message.content;
+    const requestBody = {
+        productTypes: extractProductTypesFromContent(content),
+        preferences: quizAnswers
+    };
+    console.log(requestBody)
 
     try {
         // Send the user's products to the backend for recommendations
@@ -61,10 +76,11 @@ const photoPreviewUrl = 'product-photo.jpg'
 
       // Parse the recommendations from the response
       const recData = await response.json(); 
+      console.log(recData)
 
       // Update Redux store and navigate to the recommendations page with the data
-      dispatch(setRecommendationsResponse(recData));
-      navigate('/get-recommendations', { state: { recommendations: recData } });
+      dispatch(setRecommendationsResponse(recData.recommendations));
+      navigate('/get-recommendations');
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
@@ -95,6 +111,7 @@ const photoPreviewUrl = 'product-photo.jpg'
             {/* Render EditResponseContent as a component and pass editableProducts as props */}
             {initialResponse && (
               <div className='editResponseContainer'>
+                <h3>My Products</h3>
                 <EditResponseContent initialResponse={initialResponse} /> 
                 <button onClick={handleGetRecsClick} className="selectPhotoButton" style={{ textDecoration: 'none' }}>Continue</button>
               </div>

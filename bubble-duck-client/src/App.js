@@ -6,6 +6,8 @@ import { GetRecommendations } from './components/getRecommendations';
 import { LandingPage } from './components/landingPage';
 import { Header } from './components/header'
 import { ConfirmProducts } from './components/confirmProducts';
+import { GetSchedule } from './components/getSchedule';
+import { SkincareQuiz } from './components/skincareQuiz';
 
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
           <Route path='/photo-upload' element={<PhotoUpload />} />
           <Route path='/confirm-products' element={<ConfirmProducts /> } />
           <Route path='/get-recommendations' element={<GetRecommendations /> } />
+          <Route path='/get-schedule' element={<GetSchedule /> } />
+          <Route path='/skincare-quiz' element={<SkincareQuiz /> } />
         </Route>
       </Routes>
     </Router>

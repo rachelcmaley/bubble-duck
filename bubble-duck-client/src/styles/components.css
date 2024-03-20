@@ -2,41 +2,53 @@
 
 /* LANDING PAGE */
 .landingPage {
+  background-color: #ffec70;
+  background-image: url('C:\Users\Rachel Maley\Documents\coding-projects\bubble-duck\bubble-duck-client\public\all-bubbles.png');
+  background-size: 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: rgb(0, 0, 0);
-  font-family: 'Sniglet', sans-serif;
-  font-weight: 700;
-  font-size: xx-large;
-  padding-top: 10px;
+  gap: 20px;
 }
 
-.landingPage h1 {
-  margin-top: 0;
+.bigSpeechBubble {
+  height: 450px;
+  width: 550px;
+  margin-top: -80px;
 }
 
 .landingPageDuck {
-  max-height: 400px;
+  height: 250px;
+  margin-top: -70px;
 }
 
 .beginButton {
   padding: 10px 20px;
-  background-color: #f5d7e3;
+  background-color: #F7B7D3;
   color: rgb(0, 0, 0);
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 30px;
+  font-size: 20px;
   font-family: 'Sniglet', sans-serif;
   font-weight: 600;
-  width: 350px;
+  width: 300px;
   display: flex;
   justify-content: center;
   text-decoration: none;
+  margin-bottom: 10px;
+  margin-top: -25px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.beginButton:hover {
+  background-color: hsl(334, 80%, 80%);
 }
 
 
@@ -46,18 +58,141 @@
   display: flex;
   justify-content: flex-start;
   padding: 5px;
-  width: 100%;
+  width: 100vw;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .logoContainer img {
-  height: 40px; 
+  height: 45px; 
   margin-left: 10px;
 }
 
+/* SKINCARE QUIZ */
+
+.quizContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressBarContainer {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-top: 0px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.progressBar {
+  height: 20px;
+  background-color: #deefb7;
+  transition: width 0.4s ease-in-out;
+}
+
+.quizDuckImage {
+  height: 40px;
+  margin-top: 40px;
+}
+
+.quizContainer h2 {
+  font-size: 20px;
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 700;
+  font-size: x-large;
+  margin-top: 10px;
+}
+
+.answersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.multipleChoiceList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  margin-top: 10px; /* Additional spacing if needed */
+  margin-left: 20px;
+}
+
+.answerButton, .multipleChoiceButton {
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 300;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.answerButton.selected, .multipleChoiceButton.selected {
+  background-color: #99b2dd;
+}
+
+.multipleChoiceButton {
+  width: fit-content;
+  display: block;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.continueBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 30px;
+  background-color: #fff9ea;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px #ccc;
+}
+
+.continueButton {
+  padding: 10px 20px;
+  background-color: #99b2dd;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 20px;
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 600;
+  width: 300px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-left: -40px;
+}
+
+.continueButton:hover {
+  background-color: hsl(218, 50%, 68%);
+}
+
+.continueButton:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: default;
+}
 
 /* PHOTO UPLOAD PAGE */
 .Instructions {
-  margin: 10px;
   font-family: 'PlusJakartaSans', sans-serif;
   font-weight: 100;
   font-size: large;
@@ -65,6 +200,7 @@
   flex-direction: column;
   align-self: center;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .uploadButton {
@@ -82,7 +218,7 @@
 }
   
 .uploadButton:hover {
-  background-color: #8397b8;
+  background-color: hsl(218, 50%, 68%);
 }
 
 .selectPhotoButton {
@@ -102,7 +238,7 @@
 }
 
 .selectPhotoButton:hover {
-  background-color: #c77696c4;
+  background-color: hsl(336, 60%, 85%);
 }
 
 .formContainer {
@@ -161,7 +297,7 @@
 .contentContainer {
   display: flex;
   justify-content: space-around;
-  align-items: start;
+  align-items: flex-start;
   width: 100%;
   max-width: 1200px;
   margin-top: 20px;
@@ -189,13 +325,20 @@
   font-family: 'PlusJakartaSans', sans-serif;
   font-size: 16px;
   max-width: 700px;
-  height: 400px;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
   padding: 30px 20px 30px 20px;
+}
+
+.editResponseContainer h3 {
+  font-family: 'Sniglet', sans-serif;
+  font-weight: 600;
+  font-size: x-large;
+  margin-top: -10px;
 }
 
 .editResponseContainer li {
@@ -317,41 +460,299 @@
 }
 
 /* RECOMMENDATION PAGE */
-.getRecsButton {
-  padding: 10px 20px;
-  background-color: #f5d7e3;
-  color: rgb(0, 0, 0);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-family: 'PlusJakartaSans', sans-serif;
-  width: fit-content;
+/* CURRENT PRODUCTS DISPLAY */
+.productsDisplayContainer {
   display: flex;
   justify-content: center;
-  margin: 10px;
+  height: 100vh;
+  gap: 30px;
 }
 
-.getRecsButton:hover {
-  background-color: #c77696c4;
+.recPageRightContainer {
+  height: 600px;
 }
 
+.currentProductsSection {
+  flex: 1;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-right: 20px;
+  background-color: #fff9ea;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-size: 14px;
+  max-width: 700px;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px;
+  overflow-y: scroll;
+  padding: 15px;
+}
 
+.currentProductContainer {
+  margin-bottom: 20px; /* Space between product entries */
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.currentProductContainer.newlyAdded {
+  border: 3px solid #9BB982;
+}
+
+.currentProductType {
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 10px; /* Space between type label and product details */
+}
+
+.currentProductDescription {
+  margin-left: 20px; /* Indent product details for better readability */
+  width: 85%;
+}
+
+.removeProductButton {
+  background: none; /* Removes default background */
+  color: #8a8a8a; /* Inherits the color from its parent */
+  border: none; /* Removes the default border */
+  padding: 0; /* Removes default padding */
+  font: inherit; /* Inherits the font from its parent */
+  font-size: 12px;
+  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+  outline: inherit; /* Removes the default focus outline and inherits from its parent (you might want to customize focus styles for accessibility) */
+}
+
+.productDescriptionButton {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Adjustments for a cleaner scrollbar appearance */
+.currentProductsSection::-webkit-scrollbar {
+  width: 10px;
+}
+
+.currentProductsSection::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.currentProductsSection::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.currentProductsSection::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* RECOMMENDATIONS LIST */
+.recommendationsContainer {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: #99b2dd;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-size: 14px;
+  max-width: 700px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px;
+  overflow-y: scroll;
+  padding: 15px;
+}
+
+/* Adjustments for a cleaner scrollbar appearance */
+.recommendationsContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.recommendationsContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.recommendationsContainer::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.recommendationsContainer::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.recInstructions {
+  margin-top: -10px;
+  margin-bottom: 15px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-size: 16px;
+  width: 80%;
+  text-align: center;
+}
+
+/* Container for each product type */
+.productTypeContainer {
+  margin-bottom: 30px; /* Space between different product type sections */
+  background-color: #ffffff;
+  border-radius: 5px; 
+  padding: 10px;
+}
+
+.productTypeHeader {
+  display: flex;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.productTypeIcon svg {
+  margin-left: 10px;
+  margin-right: 10px;
+  width:22px;
+  height: auto;
+}
+
+.productTypeHeading {
+  font-size: 22px;
+}
+
+.productTypeOverview{
+  margin-left: 10px;
+  margin-bottom: 30px;
+  margin-top: -10px;
+  width: 75%;
+}
+
+/* Grid container for products */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 boxes per row */
+  gap: 20px; /* Space between boxes */
+}
+
+/* Individual product box */
+.productBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+}
+
+.productImageContainer {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.productImage {
+  width: auto;
+  height: 200px;
+  border-radius: 5px; 
+}
+
+.productInfo {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.addProductButton, .salesLink {
+  background-color: #deefb7;
+  padding: 10px 20px;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  width: fit-content;
+} 
+
+.salesLink {
+  background-color: #000;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.addProductButton:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: default;
+}
 
 /* SCHEDULE PAGE */
-.getScheduleButton {
-  padding: 10px 20px;
-  background-color: #f5d7e3;
-  color: rgb(0, 0, 0);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-family: 'PlusJakartaSans', sans-serif;
-  width: fit-content;
+.schedulePageContainer {
+  position: relative;
   display: flex;
   justify-content: center;
-  margin: 10px;
+  padding: 20px;
 }
+
+.confettiContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.routineContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px; 
+  z-index: 2;
+}
+
+.daytimeRoutine, .nighttimeRoutine {
+  width: 48%; /* Adjust spacing between the two */
+  border: 3px solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  font-family: 'PlusJakartaSans', sans-serif;
+  font-weight: 100;
+  z-index: 2;
+}
+
+.schedulePageImage {
+  display: block;
+  margin: 0 auto; /* Center image */
+  max-width: 100%; /* Ensure image does not overflow its container */
+  height: 50px; /* Maintain aspect ratio */
+  border-radius: 10px; 
+}
+
+.daytimeRoutine h2, .nighttimeRoutine h2 {
+  text-align: center;
+  font-family: 'Sniglet', sans-serif;
+  font-size: x-large;
+}
+
+.daytimeRoutine p, .nighttimeRoutine p {
+  background-color: #fff9ea;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.daytimeRoutine {
+  background-color: #deefb7;
+  border-color: #f5d7e3;
+}
+
+.nighttimeRoutine {
+  background-color: #595258;
+  border-color: #99b2dd;
+}
+
+
 
 

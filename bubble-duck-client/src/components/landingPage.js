@@ -5,9 +5,9 @@ import '../styles/components.css';
 export const LandingPage = () => {
     return (
         <div className="landingPage">
-            <h1>WELCOME TO BUBBLE DUCK!</h1>
-            <img className='landingPageDuck' src='duck-landing-page.png' alt='Cute Duck Welcomes You'></img>
-            <Link to={"/photo-upload"}><button className="beginButton" style={{ textDecoration: 'none' }}>Begin</button></Link>
+            <img className="bigSpeechBubble" src="big-speech-bubble.png" alt="Welcome to Bubble Duck!"/>
+            <img className='landingPageDuck' src='duck-logo-1k.png' alt='Cute Duck Welcomes You'></img>
+            <Link to={"/skincare-quiz"}><button className="beginButton" style={{ textDecoration: 'none' }}>START QUIZ</button></Link>
         </div>
     );
 }

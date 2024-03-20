@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/components.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPhotoUploadResponse, setPhotoPreviewUrl } from '../redux/responsesSlice';
-import { displayResponseContent } from '../utils/responseHelpers';
 import { useNavigate } from 'react-router-dom';
 
 export const PhotoUpload = () => {
@@ -11,7 +10,6 @@ export const PhotoUpload = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [photoData, setPhotoData] = useState(null);
   const dispatch = useDispatch();
-  const photoUploadResponse = useSelector(state => state.responses.photoUploadResponse)
   const navigate = useNavigate();
 
   // Function to handle the file selection and update the preview and selected file state
@@ -22,7 +20,7 @@ export const PhotoUpload = () => {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
       setSelectedFile(file);
-      dispatch(setPhotoPreviewUrl)
+      dispatch(setPhotoPreviewUrl(previewUrl))
     }
   };
 
@@ -94,11 +92,6 @@ export const PhotoUpload = () => {
           <button type="submit" className="uploadButton">Upload Photo</button>
           </div>
         )}
-        {/* {responseFromBackend && (
-        <div>
-          <p>Response: {JSON.stringify(responseFromBackend)}</p>
-        </div>
-      )} */}
       </form>
       )}
       {isLoading && (

@@ -5,18 +5,17 @@ import os
 import openai
 import base64
 import json
+import psycopg2
+from psycopg2 import sql
+from dotenv import load_dotenv
+import logging
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
-
-#TODO:
-# create assistant and send knowledge files made from scraper
-# verify assistant capability to use knowledge file and provide correct response
-# format response display
-
-# response_storage = json.dumps({"choices":[{"finish_reason":"stop","index":0,"message":{"content":"In the photo, you can see the following skincare products:\n\n1. La Roche-Posay Anthelios Mineral Tinted Sunscreen for Face SPF 30 - A tinted mineral sunscreen offering broad-spectrum protection.\n\n2. e.l.f. Skin Superfine Toner - This appears to be a facial toner, likely containing Niacinamide given the text on the packaging.\n\n3. Mario Badescu Skincare Glycolic Acid Toner - A gentle exfoliating toner designed for skincare with glycolic acid as an active ingredient.\n\n4. Laneige Cica Sleeping Mask - This is a sleeping mask that contains Centella Asiatica, also known as cica, which is typically used for its soothing and repairing properties.\n\n5. CeraVe Healing Ointment - A skin protectant ointment that contains ceramides and is used to hydrate and restore the skin's barrier. \n\nThese products seem to cover a range of skincare steps including cleansing, toning, treating, moisturizing, and protecting the skin.","role":"assistant"}}],"created":1709404284,"id":"chatcmpl-8yOQmdig5jvM7y2fbdDIEJEqjkE0P","model":"gpt-4-1106-vision-preview","object":"chat.completion","usage":{"completion_tokens":215,"prompt_tokens":780,"total_tokens":995}})
 
 @app.route('/upload', methods=['POST'])
 def handle_image_upload():
@@ -50,7 +49,7 @@ def handle_image_upload():
             "content": [
                 {
                 "type": "text",
-                "text": "Identify the skincare products in this photo. Please list them and provide the primary function of each product."
+                "text": "Identify the skincare products in this photo. Please create a numbered list with each product's name, product type('cleanser', 'toner/exfoliant', 'toner', 'exfoliant', 'serum', 'moisturizer', 'retinol', 'sunscreen'), and provide the primary function of each product. Please use this format for your response: '1.Product name - Product Type - Product Function.\n\n2.Product2 Name - Product2 Type - Product2 Funciton..etc.' "
                 },
                 {
                 "type": "image_url",
@@ -68,78 +67,111 @@ def handle_image_upload():
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             response_data = response.json()
             # Assuming the response from OpenAI is the data to send back
+            print(response_data)
             return jsonify(response_data), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
 
-# old recommendations API call
-# @app.route('/recommendations', methods=['POST'])
-# def get_recommendations():
+@app.route('/recommendations', methods=['POST'])
+def get_recommendations():
+    data = request.get_json()
+    if data is None or 'productTypes' not in data or 'preferences' not in data:
+        return jsonify({"error": "Request body is missing or not JSON."}), 400
     
-#     headers = {
-#         "Content-Type": "application/json",
-#         "Authorization": f"Bearer {openai.api_key}"
-#         }
+    user_product_types = set(data.get('productTypes', []))
+    preferences = data.get('preferences', {})
+    skin_type = preferences.get('1')
+    budget = preferences.get('2')
+    product_count = preferences.get('3')
+    skincare_goals = preferences.get('4', [])
 
-#     payload = {
-#     "model": "gpt-4-vision-preview",
-#     "messages": [
-#         {
-#         "role": "user",
-#         "content": [
-#             {
-#             "type": "text",
-#             "text": f"Based off the data provided in this JSON response below, what dermatologist recommended products would you suggest adding to this skincare routine? Please provide a list of brand names for each type of product, and a short reason why each type of product is important." 
-#             },
-#         ]
-#         }
-#     ],
-#     "max_tokens": 1024
-#     }
+    base_query = "SELECT * FROM products WHERE product_type = %s"
 
-#     try:
-#         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-#         response_data = response.json()
-#         # Assuming the response from OpenAI is the data to send back
-#         return jsonify(response_data), 200
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
+    if product_count == "Essentials only (4 - 5 products)":
+        base_query += " AND is_essential = TRUE"
+
+    # Define a complete skincare routine
+    complete_routine = set(['cleanser', 'toner', 'exfoliant', 'serum', 'moisturizer', 'retinoid', 'sunscreen'])
+
+    # Determine what's missing from the user's routine
+    missing_products = complete_routine - user_product_types
+
+    recommendations = []
     
+    try:
+        # Connect to database
+        conn = psycopg2.connect(
+            dbname="skincare", user="postgres", password="legopizza", host="localhost"
+        )
+        cur = conn.cursor()
 
+        # For each missing product, query database for recommendations
+        for product_type in missing_products:
+            cur.execute(base_query, (product_type,))
+            product_data = cur.fetchall()
+
+            for row in product_data:
+                recommendations.append({
+                    "product_id": row[0],
+                    "product_type": row[1],
+                    "product_brand": row[2],
+                    "product_name": row[3],
+                    "product_image": row[4],
+                    "is_essential": row[5],
+                    "sales_link": row[6],
+                    "product_price": row[7],
+                    "description": row[8]
+                })
+
+        cur.close()
+        conn.close()
+
+        return jsonify({"recommendations": recommendations}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 @app.route('/schedule', methods=['POST'])
 def get_schedule():
+    data = request.get_json()
+    if data is None or 'currentProducts' not in data:
+        return jsonify({"error": "Request body is missing the required 'currentProducts' field."}), 400
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}"
-        }
+    products_list = data['currentProducts']
+    products_text = "\n".join([f"{product['brand']} {product['name']}: {product['description']}" for product in products_list])
 
     payload = {
-    "model": "gpt-4-vision-preview",
-    "messages": [
+        "model": "gpt-3.5-turbo",  
+         "messages": [
         {
         "role": "user",
         "content": [
             {
             "type": "text",
-            "text": f"Please list a complete morning and nighttime skincare routine incoorporating both the user's current products, and the products you recommended. Take into account the order of application and instructions for each product." 
+            "text": f"Based on these skincare products:\n{products_text}\n\nPlease list a complete morning and nighttime skincare routine incorporating these products. Take into account the order of application and instructions for each product.",
             },
-        ]
-        }
-    ],
-    "max_tokens": 1024
+            ]
+            }
+        ],
+        "max_tokens": 1024,
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {openai.api_key}"
     }
 
     try:
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
         response_data = response.json()
-        print(response.json())
-        # Assuming the response from OpenAI is the data you want to send back
+        print(response_data)
         return jsonify(response_data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
+
+
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     app.run(debug=True)

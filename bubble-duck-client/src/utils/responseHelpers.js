@@ -4,6 +4,30 @@ import { setPhotoUploadResponse } from '../redux/responsesSlice';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import '../styles/components.css';
 
+export const parseRoutines = (content) => {
+   // Split content into lines
+   const lines = content.split('\n');
+
+   // Find the index of lines starting the morning and nighttime routines
+   const morningRoutineStartIndex = lines.findIndex(line => line.startsWith('Morning Skincare Routine'));
+   const nighttimeRoutineStartIndex = lines.findIndex(line => line.startsWith('Nighttime Skincare Routine'), morningRoutineStartIndex + 1);
+ 
+   // Extract the lines for the morning routine, starting from the first numbered item
+   let morningRoutineLines = morningRoutineStartIndex !== -1 ? lines.slice(morningRoutineStartIndex + 1, nighttimeRoutineStartIndex) : [];
+   morningRoutineLines = morningRoutineLines.filter(line => line.match(/^\d+\./)); // Keep only numbered lines
+ 
+   // Extract the lines for the nighttime routine, starting from the first numbered item
+   let nighttimeRoutineLines = nighttimeRoutineStartIndex !== -1 ? lines.slice(nighttimeRoutineStartIndex + 1) : [];
+   nighttimeRoutineLines = nighttimeRoutineLines.filter(line => line.match(/^\d+\./)); // Keep only numbered lines
+ 
+   // Join the lines back into string representation for each routine
+   const morningRoutine = morningRoutineLines.join('\n');
+   const nighttimeRoutine = nighttimeRoutineLines.join('\n');
+ 
+   return { morningRoutine, nighttimeRoutine };
+};
+
+
 export function displayResponseContent(responseData) {
   if (responseData && responseData.choices && responseData.choices.length > 0) {
     const content = responseData.choices[0].message.content;
@@ -21,6 +45,34 @@ export function displayResponseContent(responseData) {
   }
   return <p>No response content available.</p>;
 }
+
+export const parseProductDetails = (content) => {
+  const productDetails = [];
+  // Split the content by double newlines to work with each product separately.
+  const productLines = content.split('\n\n');
+
+  productLines.forEach(line => {
+    // Match the product line format: Number. Brand and Product Name - Product Type - Description.
+    const match = line.match(/^(\d+)\.\s(.*?)\s-\s(.*?)\s-\s(.*)$/);
+    if (match) {
+      const [_, number, productWithBrand, productType, description] = match;
+      // Split the brand from the product name. This is simplistic and assumes the brand is the first word.
+      const [brand, ...nameParts] = productWithBrand.split(' ');
+      const name = nameParts.join(' ');
+      productDetails.push({
+        number, // Keeping number if needed for ordering or reference
+        brand,
+        name,
+        productType,
+        description
+      });
+    }
+  });
+
+  return productDetails;
+};
+
+
 
 export const EditResponseContent = ({ initialResponse }) => {
   const dispatch = useDispatch();
@@ -60,6 +112,7 @@ export const EditResponseContent = ({ initialResponse }) => {
     const updatedContent = listItems.map(item => `${item.number} ${item.text}`).join('\n\n');
     const updatedResponse = { ...initialResponse, choices: [{ ...initialResponse.choices[0], message: { content: updatedContent } }] };
     dispatch(setPhotoUploadResponse(updatedResponse));
+    console.log(updatedResponse)
   };
 
   return (
