@@ -3,6 +3,7 @@ import '../styles/components.css';
 import { useDispatch } from 'react-redux';
 import { setPhotoUploadResponse, setPhotoPreviewUrl } from '../redux/responsesSlice';
 import { useNavigate } from 'react-router-dom';
+import { LoadingBar } from '../utils/loadingBar';
 
 export const PhotoUpload = () => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -97,7 +98,8 @@ export const PhotoUpload = () => {
       {isLoading && (
         <div className='loadingContainer'>
           <img src='bubbles-loading.gif' alt='Loading Bubbles Gif'/>
-          <p>Loading...</p>
+          <p>Analyzing Photo...</p>
+          <LoadingBar loading={isLoading} />
         </div>
       )}
     </div>

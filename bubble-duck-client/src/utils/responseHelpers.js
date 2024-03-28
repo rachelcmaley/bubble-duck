@@ -6,11 +6,11 @@ import '../styles/components.css';
 
 export const parseRoutines = (content) => {
    // Split content into lines
-   const lines = content.split('\n');
+   const lines = content.split(/\n\n?/);
 
    // Find the index of lines starting the morning and nighttime routines
-   const morningRoutineStartIndex = lines.findIndex(line => line.startsWith('Morning Skincare Routine'));
-   const nighttimeRoutineStartIndex = lines.findIndex(line => line.startsWith('Nighttime Skincare Routine'), morningRoutineStartIndex + 1);
+   const morningRoutineStartIndex = lines.findIndex(line => line.startsWith('Morning'));
+   const nighttimeRoutineStartIndex = lines.findIndex(line => line.startsWith('Nighttime'), morningRoutineStartIndex + 1);
  
    // Extract the lines for the morning routine, starting from the first numbered item
    let morningRoutineLines = morningRoutineStartIndex !== -1 ? lines.slice(morningRoutineStartIndex + 1, nighttimeRoutineStartIndex) : [];
@@ -31,10 +31,20 @@ export const parseRoutines = (content) => {
 export function displayResponseContent(responseData) {
   if (responseData && responseData.choices && responseData.choices.length > 0) {
     const content = responseData.choices[0].message.content;
-    const regex = /(?:\n\n|^)(\d+\..+?)(?=\n\n|$)/gs;
-    const paragraphs = content.split('\n\n');
+
+    // Determine the separator used in the content ('\n\n' or '\n')
+    const separator = content.includes('\n\n') ? '\n\n' : '\n';
+
+    // Adjust regex based on the separator
+    const regex = separator === '\n\n' ? /(?:\n\n|^)(\d+\..+?)(?=\n\n|$)/gs : /(?:\n|^)(\d+\..+?)(?=\n|$)/gs;
+
+    // Split content based on the detected separator
+    const paragraphs = content.split(separator);
+
     const items = paragraphs.map((paragraph, index) => {
       if (regex.test(paragraph)) {
+        // Reset the regex's lastIndex property to ensure subsequent tests start from the beginning of the string
+        regex.lastIndex = 0;
         return <li key={index}>{paragraph}</li>;
       } else {
         return <p key={index}>{paragraph}</p>;
@@ -46,6 +56,7 @@ export function displayResponseContent(responseData) {
   return <p>No response content available.</p>;
 }
 
+
 export const parseProductDetails = (content) => {
   const productDetails = [];
   // Split the content by double newlines to work with each product separately.
@@ -53,7 +64,7 @@ export const parseProductDetails = (content) => {
 
   productLines.forEach(line => {
     // Match the product line format: Number. Brand and Product Name - Product Type - Description.
-    const match = line.match(/^(\d+)\.\s(.*?)\s-\s(.*?)\s-\s(.*)$/);
+    const match = line.match(/^(\d+)\.\s(.*?):\s(.*?)\s-\s(.*)$/);
     if (match) {
       const [_, number, productWithBrand, productType, description] = match;
       // Split the brand from the product name. This is simplistic and assumes the brand is the first word.
@@ -127,6 +138,7 @@ export const EditResponseContent = ({ initialResponse }) => {
                 onChange={(e) => handleContentChange(index, e.target.value)}
                 rows={3}
                 className="editableTextarea"
+                id='editableTextarea'
               />
             ) : (
               <span>{item.text}</span>

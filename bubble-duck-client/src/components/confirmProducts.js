@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EditResponseContent } from '../utils/responseHelpers';
 import { setRecommendationsResponse } from '../redux/responsesSlice';
+import { LoadingBar } from '../utils/loadingBar';
 
 
 export const ConfirmProducts = () => {
@@ -15,12 +16,10 @@ export const ConfirmProducts = () => {
   const quizAnswers = useSelector(state => state.quiz.answers);
 
 
-  // Function to extract product types from the content
 function extractProductTypesFromContent(content) {
     const productTypes = [];
     const lines = content.split('\n');
 
-    // Example patterns to identify product types
     const productTypePatterns = {
         "sunscreen": /sunscreen/i,
         "toner": /toner/i,
@@ -28,13 +27,11 @@ function extractProductTypesFromContent(content) {
         "moisturizer": /moisturizer/i,
         "cleanser": /cleanser/i,
         "exfoliant": /exfoliant/i,
-        // Add more mappings as needed
     };
 
     lines.forEach(line => {
         Object.keys(productTypePatterns).forEach(type => {
             if(productTypePatterns[type].test(line)) {
-                // Add to productTypes if not already included
                 if(!productTypes.includes(type)) {
                     productTypes.push(type);
                 }
@@ -58,7 +55,7 @@ function extractProductTypesFromContent(content) {
         productTypes: extractProductTypesFromContent(content),
         preferences: quizAnswers
     };
-    console.log(requestBody)
+    console.log("Recommendation request body: ", requestBody)
 
     try {
         // Send the user's products to the backend for recommendations
@@ -76,7 +73,7 @@ function extractProductTypesFromContent(content) {
 
       // Parse the recommendations from the response
       const recData = await response.json(); 
-      console.log(recData)
+      console.log("Recommendation response data: ", recData)
 
       // Update Redux store and navigate to the recommendations page with the data
       dispatch(setRecommendationsResponse(recData.recommendations));
@@ -94,7 +91,8 @@ function extractProductTypesFromContent(content) {
       {isLoading ? (
         <div className='loadingContainer'>
           <img src='bubbles-loading.gif' alt='Loading Bubbles Gif'/>
-          <p>Loading...</p>
+          <p>Calculating Recommendations...</p>
+          <LoadingBar loading={isLoading} />
         </div>
       ) : (
         <>

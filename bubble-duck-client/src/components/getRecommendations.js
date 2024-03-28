@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setScheduleResponse, setUpdatedRoutine } from '../redux/responsesSlice';
 import { useNavigate } from 'react-router-dom';
 import { FaWater, FaSun, FaMoon, FaStar, FaSplotch, FaPumpSoap, FaMagic } from 'react-icons/fa';
+import { LoadingBar } from '../utils/loadingBar';
+
 
 export const GetRecommendations = ({ setRecommendationsShown }) => {
     const dispatch = useDispatch();
@@ -16,7 +18,6 @@ export const GetRecommendations = ({ setRecommendationsShown }) => {
     const photoUploadResponse = useSelector(state => state.responses.photoUploadResponse);
     const [addedProductKeys, setAddedProductKeys] = useState([]);
 
-
     useEffect(() => {
         if (photoUploadResponse && photoUploadResponse.choices) {
           const content = photoUploadResponse.choices[0].message.content;
@@ -25,17 +26,15 @@ export const GetRecommendations = ({ setRecommendationsShown }) => {
         }
       }, [photoUploadResponse]);    
 
-
     useEffect(() => {
         // Whenever currentProducts changes, update the Redux store with the new routine
         dispatch(setUpdatedRoutine(currentProducts));
     }, [currentProducts, dispatch]);
 
+
     const addProductToCurrent = (product) => {
         const productKey = `${product.productType}_${product.brand}_${product.name}`;
     
-        console.log(product.product_price);
-
         if (!addedProductTypes.includes(product.product_type)) {
             setAddedProductTypes(prevTypes => [...prevTypes, product.product_type]);
             setCurrentProducts(prevProducts => [
@@ -172,7 +171,8 @@ export const GetRecommendations = ({ setRecommendationsShown }) => {
         {isLoading ? (
             <div className='loadingContainer'>
                 <img src='bubbles-loading.gif' alt='Loading Bubbles Gif'/>
-                <p>Loading...</p>
+                <p>Building Custom Skincare Schedule...</p>
+                <LoadingBar loading={isLoading} />
             </div>
         ) : (
             <>
@@ -193,7 +193,7 @@ export const GetRecommendations = ({ setRecommendationsShown }) => {
                         return (
                             <div key={index}  className={`currentProductContainer ${product.isNewlyAdded ? 'newlyAdded' : ''}`}>
                                 <div className='currentProductType'>{capitalizeProductType(product.productType)}</div>
-                                <div>{product.brand} {product.name}</div>
+                                <div className='productBrandSubheader'>{product.brand} {product.name}</div>
                                 <div className='productDescriptionButton'>
                                    <div className='currentProductDescription'>{product.description}</div>
                                     {product.isNewlyAdded && (

@@ -27,7 +27,7 @@ export const GetSchedule = () => {
 
     return (
       <div className='schedulePageContainer'>
-        {isLoading && <p>Loading...</p>}
+        {isLoading && <p>Building Custom Schedule...</p>}
         <div className='confettiContainer'>
           <Confetti 
           width={width}
@@ -37,11 +37,14 @@ export const GetSchedule = () => {
           gravity={0.02}
         />
         </div>
+        <div className='scheduleHeader'>
+          <h3>Congratulations! Here is your complete skincare schedule:</h3>
+        </div>
         <div className='routineContainer'>
           <div className='daytimeRoutine'>
             <img className='schedulePageImage' src='cute-sun.png' alt='Cute Sun' ></img>
             <h2>Morning Schedule</h2>
-            {/* Assuming the routines are separated by new lines in the content */}
+            {/* Routines are separated by new lines in the content */}
             {morningRoutine.split('\n').map((step, index) => (
               <p key={index}>{step}</p>
             ))}
@@ -53,12 +56,6 @@ export const GetSchedule = () => {
               <p key={index}>{step}</p>
             ))}
           </div>
-          {isLoading && (
-          <div className='loadingContainer'>
-            <img src='bubbles-loading.gif' alt='Loading Bubbles Gif'/>
-            <p>Loading...</p>
-          </div>
-        )}
         </div>
       </div>
     );

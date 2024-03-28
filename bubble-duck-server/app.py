@@ -49,7 +49,7 @@ def handle_image_upload():
             "content": [
                 {
                 "type": "text",
-                "text": "Identify the skincare products in this photo. Please create a numbered list with each product's name, product type('cleanser', 'toner/exfoliant', 'toner', 'exfoliant', 'serum', 'moisturizer', 'retinol', 'sunscreen'), and provide the primary function of each product. Please use this format for your response: '1.Product name - Product Type - Product Function.\n\n2.Product2 Name - Product2 Type - Product2 Funciton..etc.' "
+                "text": "Identify the skincare products in this photo. Please create a numbered list with each product's name, product type('cleanser', 'toner/exfoliant', 'toner', 'exfoliant', 'serum', 'moisturizer', 'retinol', 'sunscreen') and function. Please use this format for your response: '1.Product1 name: Product1 Type - Product1 Function\n\n2.Product2 Name: Product2 Type - Product2 Function\n\n2.Product3 Name: Product3 Type - Product3 Function..etc.' "
                 },
                 {
                 "type": "image_url",
@@ -66,7 +66,6 @@ def handle_image_upload():
         try:
             response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
             response_data = response.json()
-            # Assuming the response from OpenAI is the data to send back
             print(response_data)
             return jsonify(response_data), 200
         except Exception as e:
@@ -148,7 +147,7 @@ def get_schedule():
         "content": [
             {
             "type": "text",
-            "text": f"Based on these skincare products:\n{products_text}\n\nPlease list a complete morning and nighttime skincare routine incorporating these products. Take into account the order of application and instructions for each product.",
+            "text": f"Based on these skincare products:\n{products_text}\n\nPlease list a complete Morning Skincare Routine and a complete Nighttime Skincare Routine incorporating these products. Take into account the order of application and instructions for each product.",
             },
             ]
             }
